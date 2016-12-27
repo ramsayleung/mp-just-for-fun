@@ -8,6 +8,11 @@ app = Flask(__name__)
 app.config.from_object(DevConfig)
 
 
+@app.route('/weixin/index')
+def index():
+    return "Index,successful"
+
+
 @app.route('/weixin')
 def weixin():
     if request.method == 'GET':
@@ -29,14 +34,16 @@ def weixin():
             fromu = xml_rec.find('FromUserName').text
             content = xml_rec.find('Content').text
             xml_rep = "<xml>\
-            <ToUserName><![CDATA[%s]]></ToUserName>\
-            <FromUserName><![CDATA[%s]]></FromUserName>\
-            <CreateTime>%s</CreateTime>\
-            <MsgType><![CDATA[text]]></MsgType>\
-            <Content><![CDATA[%s]]></Content>\
-            <FuncFlag>0</FuncFlag>\
-            </xml>"
+                <ToUserName><![CDATA[%s]]></ToUserName>\
+                <FromUserName><![CDATA[%s]]></FromUserName>\
+                <CreateTime>%s</CreateTime>\
+                <MsgType><![CDATA[text]]></MsgType>\
+                <Content><![CDATA[%s]]></Content>\
+                <FuncFlag>0</FuncFlag>\
+                </xml>"
+
+    # return "helloworld"
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
