@@ -7,5 +7,5 @@ class ProdConfig(Config):
 
 
 class DevConfig(Config):
-    # DEBUG = True
-    pass
+    DEBUG = True
+    # pass
