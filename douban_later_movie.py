@@ -62,3 +62,8 @@ class LaterPlayingMovie(object):
 
     def movie_main(self):
         self.movie_store(self.movie_parser(self.html_downloader(self.url)))
+
+
+if __name__ == "__main":
+    later_movie = LaterPlayingMovie()
+    later_movie.movie_main()

@@ -56,3 +56,8 @@ class NowPlayingMovie(object):
 
     def movie_main(self):
         self.movie_store(self.movie_parser(self.html_downloader(self.url)))
+
+
+if __name__ == "__main__":
+    now_movie = NowPlayingMovie()
+    now_movie.movie_main()
