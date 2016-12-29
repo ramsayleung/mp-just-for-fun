@@ -1,29 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
-
 import requests
 from lxml import html
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-# create a file handler
-handler = logging.FileHandler('{}.log'.format(__name__))
-handler.setLevel(logging.WARNING)
-
-# create a logging format
-formatter = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-
-# add the handlers to the logger
-logger.addHandler(handler)
+import weixin_logger
 
 
 class LyricsSearcher(object):
     def __init__(self):
+        logger = weixin_logger.WeixinLogger(__name__)
+        self.logger = logger.get_logger()
         self.search_url = 'http://www.xiami.com/search?key='
         self.headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;",
@@ -62,8 +49,8 @@ class LyricsSearcher(object):
                 "//div[@class='result_main']/table/tbody[1]/tr/td[2]/a[{}]\
                 /@href".format(tag_index))[0]
         except IndexError, e:
-            logger.warn("找不到该歌词对应的歌曲")
-            logger.error(e)
+            self.logger.warn("找不到该歌词对应的歌曲")
+            self.logger.error(e)
             song_name = None
             singer_name = None
             lyrics_url = None
@@ -74,8 +61,8 @@ class LyricsSearcher(object):
             text = html.fromstring(content)
             lyrics = text.xpath("//div[@id='lrc']/div[1]")[0].text_content()
         except IndexError, e:
-            logger.warn("找不到该歌词对应的歌曲")
-            logger.error(e)
+            self.logger.warn("找不到该歌词对应的歌曲")
+            self.logger.error(e)
             lyrics = None
         return lyrics
 
