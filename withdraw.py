@@ -24,5 +24,5 @@ class Withdraw(object):
 
     def withdraw_later_coming_movies(self):
         upcoming_movies = pickle.loads(self.redis.get("upcoming_movies"))
-        return "\n".join("%s  %s 　%s 　%s" % (name, date, category, area)
-                         for (name, date, category, area) in upcoming_movies)
+        return "\n\n".join("%s\n%s\n%s\n%s" % (name, date, category, area)
+                           for (name, date, category, area) in upcoming_movies)
