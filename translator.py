@@ -21,14 +21,13 @@ class Translator(object):
         # 翻译单词
         try:
             if data["errorCode"] == 0:
-                translation = data["translation"]
                 us_phonetic = data["basic"]["us-phonetic"]
                 phonetic = data["basic"]["phonetic"]
                 uk_phonetic = data["basic"]["phonetic"]
                 explains = []
-                detailed_explains = ''.join(data["basic"]["explains"])
-                reply = u"{0}:\\n翻译:{1}\\n 美式发音:{2}\\n 英式发音:{3}\\n词义解释:{4}".format(
-                    self.key, translation, us_phonetic, uk_phonetic,
+                detailed_explains = '\n'.join(data["basic"]["explains"])
+                reply = u"{0}:\n 美式发音:{1}\n 英式发音:{2}\n词义解释:{3}".format(
+                    self.key, us_phonetic, uk_phonetic,
                     detailed_explains).encode('utf-8')
             elif data["errorCode"] == 20:
                 reply = u"哎呀，要Sam翻译的文本过长啦".encode('utf-8')
