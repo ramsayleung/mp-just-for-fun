@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 import pickle
 import sys
 
@@ -11,7 +12,11 @@ sys.setdefaultencoding("utf-8")
 
 class Withdraw(object):
     def __init__(self):
-        self.redis = redis.StrictRedis(host='localhost', port=6379, db=0)
+        self.redis = redis.StrictRedis(
+            host='localhost',
+            port=6379,
+            db=0,
+            password=os.getenv("REDIS_PASSWORD"))
 
     def withdraw_now_playing_movies(self):
         sorted_movies = pickle.loads(self.redis.get('now_playing_movies'))

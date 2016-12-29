@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import operator
+import os
 import pickle
 
 import redis
@@ -10,7 +11,11 @@ from lxml import html
 
 class NowPlayingMovie(object):
     def __init__(self):
-        self.redis = redis.StrictRedis(host='localhost', port=6379, db=0)
+        self.redis = redis.StrictRedis(
+            host='localhost',
+            port=6379,
+            db=0,
+            password=os.getenv("REDIS_PASSWORD"))
         self.url = 'https://movie.douban.com/nowplaying/guangzhou/'
         self.headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;",
