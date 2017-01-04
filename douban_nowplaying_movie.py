@@ -33,17 +33,18 @@ class NowPlayingMovie(object):
 
     def movie_parser(self, content):
         data = html.fromstring(content)
-        movie_name_list = []
-        movie_rating_list = []
-        movie_name_list = data.xpath(
-            "//div[@id='nowplaying']/div[2]/ul/li/ul/li[@class='stitle']")
-        movie_rating_list = data.xpath(
-            "//div[@id='nowplaying']/div[2]/ul/li/ul/li[@class='srating']")
-        movie_name_list = map(lambda x: x.text_content().strip(),
-                              movie_name_list)
+        # movie_name_list = []
+        # movie_rating_list = []
+        # movie_name_list = data.xpath("//div[@id='nowplaying']/div[2]/ul/li/ul/li[@class='stitle']")
+        # movie_rating_list = data.xpath("//div[@id='nowplaying']/div[2]/ul/li/ul/li[@class='srating']")
+        movie_name_list = map(
+            lambda x: x.text_content().strip(),
+            data.xpath(
+                "//div[@id='nowplaying']/div[2]/ul/li/ul/li[@class='stitle']"))
         movie_rating_list = map(
             lambda x: x.text_content().strip().encode('utf-8'),
-            movie_rating_list)
+            data.xpath(
+                "//div[@id='nowplaying']/div[2]/ul/li/ul/li[@class='srating']"))
         movies = dict(zip(movie_name_list, movie_rating_list))
         sorted_movies = sorted(
             movies.items(), key=lambda x: x[1], reverse=True)

@@ -8,13 +8,18 @@ from config import DevConfig
 
 from flask import Flask, make_response, request
 
+from library_search import LibrarySearcher
 from lyrics import LyricsSearcher
 from translator import Translator
 from withdraw import Withdraw
 
 app = Flask(__name__)
 app.config.from_object(DevConfig)
-
+tip = u'Sam无法识别你的要求哦，要不再检查一下你给Sam的指令\n\
+如果你想查询正在上映的电影，你就输入"正在上映的电影",\n\
+如果你想查询即将上映的电影，你就输入"即将上映的电影",\n\
+如果你想翻译单词的话，你就输入"翻译:你要翻译的单词"，例如"翻译:library"\n\
+如果你想根据歌词查询歌曲的话，你就输入"歌词:你想查询的歌词，例如"歌词:月亮代表我的心"'.encode('utf-8')
 xml_rep = "<xml>\
     <ToUserName><![CDATA[{0}]]></ToUserName>\
     <FromUserName><![CDATA[{1}]]></FromUserName>\
@@ -32,6 +37,8 @@ UPCOMING = "\xe5\x8d\xb3\xe5\xb0\x86\xe4\xb8\x8a\xe6\x98\xa0\xe7\x9a\x84\xe7\x94
 LYRICS = "\xe6\xad\x8c\xe8\xaf\x8d"
 # 翻译
 TRANSLATION = "\xe7\xbf\xbb\xe8\xaf\x91"
+# 图书馆
+LIBRARY = "\xe5\x9b\xbe\xe4\xb9\xa6\xe9\xa6\x86"
 
 
 @app.route('/weixin', methods=['GET', 'POST'])
@@ -54,7 +61,7 @@ def weixin():
         tou = xml_rec.find('ToUserName').text
         fromu = xml_rec.find('FromUserName').text
         content = xml_rec.find('Content').text.encode('utf-8')
-        reply = u'Sam无法识别你的要求哦，要不再检查一下你给Sam的指令'.encode('utf-8')
+        reply = tip
         if content.startswith(LYRICS):
             content.replace('：', ':')  # 将全角的：转换成半角的:，以防 用户用了全角的:,无法识别
             try:
@@ -79,6 +86,16 @@ def weixin():
         elif content.startswith(UPCOMING):
             withdraw = Withdraw()
             reply = withdraw.withdraw_later_coming_movies()
+        elif content.startswith(LIBRARY):
+            content.replace('：', ':')  # 将全角的：转换成半角的:，以防 用户用了全角的:,无法识别
+            try:
+                key = content.split(':')[1]
+            except IndexError, e:  # 原来的unicode编码导致无法用：作分解符split，所以
+                #要用unicode分割
+                key = content.split('\xef\xbc\x9a')[1]
+            # key = key.replace(" ", "+")
+            library_searcher = LibrarySearcher()
+            reply = library_searcher.search_main(key.replace(" ", "+"))
         else:
             pass
         response = make_response(
