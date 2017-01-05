@@ -4,9 +4,9 @@
 import re
 
 import requests
-# from bs4 import BeautifulSoup
-from lxml import html
+from lxml import etree, html
 from lxml.html import clean
+from pyquery import PyQuery as pq
 
 
 class LibrarySearcher(object):
@@ -29,36 +29,30 @@ class LibrarySearcher(object):
         return response.content
 
     def content_parser(self, content):
-
+        # fix broken html
+        fixed_html = html.tostring(html.fromstring(content))
+        doc = pq(fixed_html)
         data = html.fromstring(content)
         # cleaner = clean.Cleaner(
         #     allow_tags=['table', 'tr', 'td'], remove_unknown_tags=False)
         # cleaner.clean_html(data)
         # self._clean_attrib(data)
-        # with open('/tmp/html.html', 'w') as f:
-        #     f.write(
-        #         html.tostring(
-        #             data, encoding='utf-8', pretty_print=True, method='html'))
         #delete "馆藏"
-        for i in data.xpath("//ol[@id='search_book_list']/li/p/a"):
-            i.getparent().remove(i)
+        doc.remove("#search_book_list>li>p>a")
+        books_detail_list = map(lambda x: x.text(),
+                                doc("#search_book_list>li>p").items())
+        # for i in data.xpath("//ol[@id='search_book_list']/li/p/a"):
+        #     i.getparent().remove(i)
         has_next_page = (
             len(data.xpath("//div[@id='content']/div[5]/span/a")) == 0)
+        # books_list = map(lambda x: x.text_content(),
+        #                  data.xpath("//ol[@id='search_book_list']/li/h3"))
         books_list = map(lambda x: x.text_content(),
-                         data.xpath("//ol[@id='search_book_list']/li/h3"))
-        books_detail_list = map(
-            lambda x: x.text_content().replace(" ", ""),
-            data.xpath("//ol[@id='search_book_list']/li/p"))
-        # for i in data.xpath("//ol[@id='search_book_list']/li/p/span"):
-        #     i.getparent().remove(i)
-
-        # books_publisher_list = map(
-        #     lambda x: x.text_content().strip(),
-        #     data.xpath("//ol[@id='search_book_list']/li/p"))
+                         doc("#search_book_list>li>h3"))
         warn = ''
         if not has_next_page:
             warn = u'太多的内容，为了版面整洁，不会一次性全部显示，建议重新输入更详尽的书名\n'.encode('utf-8')
-        return warn + "\n\n".join(
+        return warn + "---------------------\n".join(
             "%s\n%s\n" % tup
             for tup in zip(books_list, books_detail_list)).replace("(0)", "")
 
