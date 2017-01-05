@@ -4,7 +4,7 @@
 import re
 
 import requests
-# from html.parser import HTMLParser
+# from bs4 import BeautifulSoup
 from lxml import html
 from lxml.html import clean
 
@@ -29,6 +29,7 @@ class LibrarySearcher(object):
         return response.content
 
     def content_parser(self, content):
+
         data = html.fromstring(content)
         # cleaner = clean.Cleaner(
         #     allow_tags=['table', 'tr', 'td'], remove_unknown_tags=False)
@@ -43,12 +44,17 @@ class LibrarySearcher(object):
             i.getparent().remove(i)
         has_next_page = (
             len(data.xpath("//div[@id='content']/div[5]/span/a")) == 0)
-        books_list = map(
-            lambda x: x.text_content().replace("    ", "  Index:").strip(),
-            data.xpath("//ol[@id='search_book_list']/li/h3/a"))
+        books_list = map(lambda x: x.text_content(),
+                         data.xpath("//ol[@id='search_book_list']/li/h3"))
         books_detail_list = map(
-            lambda x: x.text_content().strip(),
+            lambda x: x.text_content().replace(" ", ""),
             data.xpath("//ol[@id='search_book_list']/li/p"))
+        # for i in data.xpath("//ol[@id='search_book_list']/li/p/span"):
+        #     i.getparent().remove(i)
+
+        # books_publisher_list = map(
+        #     lambda x: x.text_content().strip(),
+        #     data.xpath("//ol[@id='search_book_list']/li/p"))
         warn = ''
         if not has_next_page:
             warn = u'太多的内容，为了版面整洁，不会一次性全部显示，建议重新输入更详尽的书名\n'.encode('utf-8')
