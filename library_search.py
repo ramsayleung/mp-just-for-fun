@@ -38,7 +38,9 @@ class LibrarySearcher(object):
         #     f.write(
         #         html.tostring(
         #             data, encoding='utf-8', pretty_print=True, method='html'))
-
+        #delete "馆藏"
+        for i in data.xpath("//ol[@id='search_book_list']/li/p/a"):
+            i.getparent().remove(i)
         has_next_page = (
             len(data.xpath("//div[@id='content']/div[5]/span/a")) == 0)
         books_list = map(
@@ -50,8 +52,9 @@ class LibrarySearcher(object):
         warn = ''
         if not has_next_page:
             warn = u'太多的内容，为了版面整洁，不会一次性全部显示，建议重新输入更详尽的书名\n'.encode('utf-8')
-        return warn + "\n".join("%s      %s" % tup
-                                for tup in zip(books_list, books_detail_list))
+        return warn + "\n\n".join(
+            "%s\n%s\n" % tup
+            for tup in zip(books_list, books_detail_list)).replace("(0)", "")
 
     def search_main(self, key):
         url = self.url % key
