@@ -47,6 +47,7 @@ class LibrarySearcher(object):
             len(data.xpath("//div[@id='content']/div[5]/span/a")) == 0)
         # books_list = map(lambda x: x.text_content(),
         #                  data.xpath("//ol[@id='search_book_list']/li/h3"))
+        doc.remove("#search_book_list>li>h3>span")
         books_list = map(lambda x: x.text_content(),
                          doc("#search_book_list>li>h3"))
         warn = ''
