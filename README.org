@@ -39,10 +39,10 @@
   正在上映的信息和即将上映的信息爬取下来，然后保存到redis 中，然后用 *crontab* 
   每天凌晨运行脚本，爬取最新电影信息以更新redis 数据
 ** 截图
-   即将上映的电影
-   [[./images/upcoming.jpg]]
-   正在上映的电影：
-   [[./images/playing.jpg]]
+*** 即将上映的电影
+    [[./images/upcoming.jpg]]
+*** 正在上映的电影：
+    [[./images/playing.jpg]]
 * 开发
   安装依赖
   #+BEGIN_SRC python
