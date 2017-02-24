@@ -1,0 +1,53 @@
+* SamrayJustForFun
+  这是我自己闲来无事开发的一个公众号。主要功能有歌词查询，单词翻译，电影查询
+* 用法：
+  + 如果你想查询正在上映的电影，你就输入"正在上映的电影"
+  + 如果你想查询即将上映的电影，你就输入"即将上映的电影"
+  + 如果你想翻译单词的话，你就输入"翻译:你要翻译的单词"，例如"翻译:library"
+  + 如果你想根据歌词查询歌曲的话，你就输入"歌词:你想查询的歌词，例如"歌词:月亮代表我的心"
+* 项目目录结构
+  #+BEGIN_SRC 
+├── config.py //项目相关配置
+├── douban_later_movie.py //爬虫：爬取豆瓣即将上映的电影信息
+├── douban_nowplaying_movie.py //爬虫：爬取正在上映电影信息
+├── lyrics.py //歌词查询
+├── README.org 
+├── requirements.txt //项目依赖
+├── translator.py //单词翻译
+├── uwsgi.ini //wsgi 配置
+├── weixin_logger.py //日志配置
+├── weixin.py //程序入口
+├── withdraw.py //从redis 取出存储的电影信息
+└── wsgi.py //启动文件
+  #+END_SRC
+* 歌词查询 
+  获取用户发给公众号的歌词，然后向[[http://www.xiami.com/][虾米]] 查询对应的歌曲，因为查询返回给服务器的是
+  html 页面，所以使用lxml 解析页面，然后将结果返回用户
+  截图：
+  [[./images/lyric.jpg]]
+* 单词翻译
+  获取用户输入的单词，然后服务器将单词发送给有道api,然后有道将翻译结果返回给服务器
+  服务器转发给用户
+  截图：
+  [[./images/translate.jpg]]
+* 电影查询
+  电影查询分为两种情况：
+  + 即将上映的电影
+  + 正在上映的电影
+  电影信息并不是每分钟都有更新，大部份电影信息更新时间较长，所以我预先将[[https://movie.douban.com/later/guangzhou/][豆瓣电]]影 
+  正在上映的信息和即将上映的信息爬取下来，然后保存到redis 中，然后用 *crontab*
+  每天凌晨运行脚本，爬取最新电影信息以更新redis 数据
+  截图：
+  即将上映的电影
+  [[./images/upcoming.jpg]]
+  正在上映的电影：
+  [[./images/playing.jpg]]
+* 开发
+  安装依赖
+  #+BEGIN_SRC python
+    pip install -r requirements.txt
+  #+END_SRC
+  运行
+  #+BEGIN_SRC shell
+    gunicorn -w4 -b0.0.0.0:5000 weixin:app
+  #+END_SRC
