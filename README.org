@@ -1,3 +1,4 @@
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 * SamrayJustForFun
   这是我自己闲来无事开发的一个公众号。主要功能有歌词查询，单词翻译，电影查询
 * 用法：
