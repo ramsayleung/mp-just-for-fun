@@ -23,26 +23,26 @@
   #+END_SRC
 * 歌词查询 
   获取用户发给公众号的歌词，然后向[[http://www.xiami.com/][虾米]] 查询对应的歌曲，因为查询返回给服务器的是\\
-  html 页面，所以使用lxml 解析页面，然后将结果返回用户\\
-  截图：
-  [[./images/lyric.jpg]]
+  html 页面，所以使用lxml 解析页面，然后将结果返回用户
+** 截图：
+   [[./images/lyric.jpg]]
 * 单词翻译
   获取用户输入的单词，然后服务器将单词发送给有道api,然后有道将翻译结果返回给服务器\\
-  服务器转发给用户\\
-  截图：
-  [[./images/translate.jpg]]
+  服务器转发给用户
+** 截图：
+   [[./images/translate.jpg]]
 * 电影查询
   电影查询分为两种情况：
   + 即将上映的电影
   + 正在上映的电影
   电影信息并不是每分钟都有更新，大部份电影信息更新时间较长，所以我预先将[[https://movie.douban.com/later/guangzhou/][豆瓣电]]影 \\
-  正在上映的信息和即将上映的信息爬取下来，然后保存到redis 中，然后用 *crontab*\\
-  每天凌晨运行脚本，爬取最新电影信息以更新redis 数据\\
-  截图\\
-  即将上映的电影
-  [[./images/upcoming.jpg]]
-  正在上映的电影：
-  [[./images/playing.jpg]]
+  正在上映的信息和即将上映的信息爬取下来，然后保存到redis 中，然后用 *crontab* 
+  每天凌晨运行脚本，爬取最新电影信息以更新redis 数据
+** 截图
+   即将上映的电影
+   [[./images/upcoming.jpg]]
+   正在上映的电影：
+   [[./images/playing.jpg]]
 * 开发
   安装依赖
   #+BEGIN_SRC python
